@@ -506,6 +506,101 @@ class TaskGenerator:
                 json.dump(metadata.__dict__, f, indent=2)
         
         logger.info(f"Saved {len(tasks)} tasks to {partition_dir}")
+    # Add this method to the TaskGenerator class (anywhere inside the class)
+
+def pairwise_comparison(self, task_a: Dict, task_b: Dict, 
+                        task_a_metadata, task_b_metadata) -> tuple:
+    """
+    Compare two similar tasks and return the more diagnostic one.
+    
+    Diagnostic criteria:
+    1. Higher difficulty (hard > medium > easy)
+    2. Hand-adversarial > multi-LLM > programmatic > trace-derived
+    3. Higher quality score
+    """
+    # Difficulty ranking
+    difficulty_rank = {"hard": 3, "medium": 2, "easy": 1}
+    score_a = difficulty_rank.get(task_a.get("difficulty", "medium"), 2)
+    score_b = difficulty_rank.get(task_b.get("difficulty", "medium"), 2)
+    
+    if score_a != score_b:
+        return (task_a, task_a_metadata) if score_a > score_b else (task_b, task_b_metadata)
+    
+    # Source mode ranking
+    mode_rank = {
+        "hand-adversarial": 4,
+        "multi-llm-synthesis": 3,
+        "programmatic": 2,
+        "trace-derived": 1
+    }
+    score_a = mode_rank.get(task_a.get("source_mode", "programmatic"), 2)
+    score_b = mode_rank.get(task_b.get("source_mode", "programmatic"), 2)
+    
+    if score_a != score_b:
+        return (task_a, task_a_metadata) if score_a > score_b else (task_b, task_b_metadata)
+    
+    # Quality score
+    quality_a = getattr(task_a_metadata, "quality_score", 0.5) if task_a_metadata else 0.5
+    quality_b = getattr(task_b_metadata, "quality_score", 0.5) if task_b_metadata else 0.5
+    
+    if abs(quality_a - quality_b) > 0.1:
+        return (task_a, task_a_metadata) if quality_a > quality_b else (task_b, task_b_metadata)
+    
+    # Too similar, keep both (they're different enough)
+    return None
+
+
+def deduplicate_with_pairwise_comparison(self, tasks, similarity_threshold=0.85):
+    """
+    Deduplicate tasks using embedding similarity + pairwise comparison.
+    """
+    if len(tasks) < 2:
+        return tasks
+    
+    try:
+        from sentence_transformers import SentenceTransformer
+        from sklearn.metrics.pairwise import cosine_similarity
+    except ImportError:
+        print("  Warning: sentence-transformers not installed, skipping pairwise dedup")
+        return tasks
+    
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    # Create embeddings
+    texts = []
+    for task, metadata in tasks:
+        prospect = task.get("input", {}).get("prospect_brief", {})
+        bench = task.get("input", {}).get("bench_summary", {})
+        text = f"{prospect.get('company_name', '')} {prospect.get('hiring_signals', [])} {bench.get('specializations', [])}"
+        texts.append(text)
+    
+    embeddings = model.encode(texts)
+    similarity_matrix = cosine_similarity(embeddings)
+    
+    # Find and resolve conflicts
+    kept_indices = set(range(len(tasks)))
+    
+    for i in range(len(tasks)):
+        if i not in kept_indices:
+            continue
+        for j in range(i + 1, len(tasks)):
+            if j not in kept_indices:
+                continue
+            if similarity_matrix[i][j] > similarity_threshold:
+                task_a, meta_a = tasks[i]
+                task_b, meta_b = tasks[j]
+                result = self.pairwise_comparison(task_a, task_b, meta_a, meta_b)
+                
+                if result is None:
+                    continue
+                elif result == (task_a, meta_a):
+                    kept_indices.discard(j)
+                else:
+                    kept_indices.discard(i)
+                    break
+    
+    return [tasks[i] for i in sorted(kept_indices)]
+    
 
 
 def main():
