@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-20004",
+  "source_mode": "hand-adversarial",
+  "failure_dimension": "grounding-loss",
+  "difficulty": "medium",
+  "generation_timestamp": "2026-04-29T20:29:54.508403",
+  "model_used": null,
+  "judge_model": null,
+  "quality_score": null
+}

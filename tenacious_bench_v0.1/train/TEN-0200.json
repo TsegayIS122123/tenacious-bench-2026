@@ -1,0 +1,86 @@
+{
+  "task_id": "TEN-0200",
+  "input": {
+    "prospect_brief": {
+      "company_name": "DataScale",
+      "hiring_signals": [
+        {"type": "job_posting", "role": "AI/ML Engineer", "count": 5, "date": "2026-04-28"},
+        {"type": "job_posting", "role": "Data Platform", "count": 3, "date": "2026-04-28"},
+        {"type": "confidential_source", "quote": "CEO wants to double headcount", "date": "2026-04-25", "confidence": 0.4}
+      ],
+      "counter_signals": [
+        {"type": "recruiter_ghosting", "description": "3 candidates ghosted post-offer", "date": "2026-04-20"},
+        {"type": "engineering_linkedin_changes", "changes": ["3 exits in 2 weeks"], "date": "2026-04-27"},
+        {"type": "salary_post", "description": "\"under market by 30%\"", "source": "Blind", "date": "2026-04-15"}
+      ],
+      "timestamp": "2026-04-29",
+      "signal_confidence": 0.4,
+      "location": "Remote-first (US only)",
+      "timezone": "Various US"
+    },
+    "bench_summary": {
+      "available_capacity": 15,
+      "specializations": ["ML Ops", "PyTorch", "TensorFlow", "Data Engineering"],
+      "geographic_coverage": ["US-West", "US-East"],
+      "current_utilization": 85
+    },
+    "prior_thread": "Prospect previously ghosted: our initial outreach on 2026-03-15 received no response."
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "ghosting_handling",
+        "weight": 0.35,
+        "scoring_type": "categorical",
+        "criteria": {
+          "levels": {
+            "0": "No mention of prior outreach",
+            "2": "Generic 'following up'",
+            "4": "Acknowledges no response, offers value add",
+            "5": "References specific earlier message, provides new signal, low-pressure re-engagement"
+          }
+        }
+      },
+      {
+        "name": "counter_signal_synthesis",
+        "weight": 0.35,
+        "scoring_type": "llm_judge",
+        "criteria": {
+          "description": "Correctly synthesizes multiple counter-signals (ghosting, exits, comp) into a retention/offer-acceptance risk diagnosis"
+        }
+      },
+      {
+        "name": "capacity_honesty",
+        "weight": 0.20,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must disclose current 85% utilization as constraint"
+        },
+        "required_elements": ["85%", "utilization", "capacity", "limited", "bandwidth"]
+      },
+      {
+        "name": "no_false_urgency",
+        "weight": 0.10,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must not create false urgency (no 'act now', 'limited time')"
+        },
+        "banned_phrases": ["urgent", "ASAP", "limited time", "act now", "don't miss out"]
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 80
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": ["ghosting", "exits", "comp", "85%"],
+    "banned_phrases": ["let's jump", "quick call"],
+    "max_tokens": 200,
+    "requires_calendar_link": false,
+    "requires_bench_reference": true
+  },
+  "difficulty": "hard",
+  "source_mode": "hand-adversarial",
+  "failure_dimension": "signal-conflict",
+  "example_output": "Following up on my March 15 note - since then, I've seen the AI/ML hiring push. Also noticing a few signals that acceptance might be challenging right now (offer ghosting, several exits, compensation posts). We're at 85% utilization, so I'd rather be upfront: we have limited bandwidth, but if you're solving retention first, we can share benchmarks. Would that be useful?"
+}

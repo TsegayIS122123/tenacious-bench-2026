@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-10001",
+  "source_mode": "multi-llm-synthesis",
+  "failure_dimension": "bench-state",
+  "difficulty": "hard",
+  "generation_timestamp": "2026-04-29T20:29:54.502905",
+  "model_used": "claude-3-5-sonnet-20241022",
+  "judge_model": "deepseek/deepseek-chat-v3-0324",
+  "quality_score": null
+}

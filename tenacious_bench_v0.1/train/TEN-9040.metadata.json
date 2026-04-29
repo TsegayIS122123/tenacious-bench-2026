@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-9040",
+  "source_mode": "programmatic",
+  "failure_dimension": "signal-conflict",
+  "difficulty": "hard",
+  "generation_timestamp": "2026-04-29T20:29:54.501537",
+  "model_used": "deepseek/deepseek-chat-v3-0324",
+  "judge_model": "claude-3-5-sonnet-20241022",
+  "quality_score": null
+}

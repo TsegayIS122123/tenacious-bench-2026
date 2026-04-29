@@ -1,0 +1,64 @@
+{
+  "task_id": "TEN-9049",
+  "input": {
+    "prospect_brief": {
+      "company_name": "InnovateAI",
+      "hiring_signals": [
+        {
+          "type": "job_posting",
+          "role": "Senior Engineer",
+          "count": 3
+        }
+      ],
+      "counter_signals": [],
+      "timestamp": "2026-04-29",
+      "signal_confidence": 0.9,
+      "location": "San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    "bench_summary": {
+      "available_capacity": 0,
+      "specializations": [
+        "Java",
+        "GCP"
+      ],
+      "geographic_coverage": [
+        "US-West",
+        "US-East"
+      ],
+      "current_utilization": 100
+    },
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "capacity_check",
+        "weight": 0.35,
+        "scoring_type": "binary"
+      },
+      {
+        "name": "specialization_match",
+        "weight": 0.35,
+        "scoring_type": "binary"
+      },
+      {
+        "name": "honesty",
+        "weight": 0.3,
+        "scoring_type": "llm_judge"
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 75
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": [],
+    "banned_phrases": [],
+    "max_tokens": 200
+  },
+  "difficulty": "hard",
+  "source_mode": "programmatic",
+  "failure_dimension": "bench-state",
+  "example_output": "We're currently at high utilization. Let's check back in 6-8 weeks when we have confirmed capacity."
+}

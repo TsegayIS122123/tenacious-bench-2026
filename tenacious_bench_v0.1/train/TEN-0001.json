@@ -1,0 +1,81 @@
+{
+  "task_id": "TEN-0001",
+  "input": {
+    "prospect_brief": {
+      "company_name": "Acorp",
+      "hiring_signals": [
+        {"type": "job_posting", "role": "Senior Backend Engineer", "count": 3, "date": "2026-04-15"},
+        {"type": "funding", "amount": "$20M", "date": "2026-03-01"}
+      ],
+      "counter_signals": [
+        {"type": "burnout_mention", "source": "all-hands", "quote": "team is exhausted", "date": "2026-04-20"}
+      ],
+      "timestamp": "2026-04-25",
+      "signal_confidence": 0.7,
+      "location": "San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    "bench_summary": {
+      "available_capacity": 40,
+      "specializations": ["Backend Python", "AWS", "PostgreSQL"],
+      "geographic_coverage": ["US-West", "US-East"],
+      "current_utilization": 60
+    },
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "signal_conflict_detection",
+        "weight": 0.35,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must detect contradiction between hiring signals (positive) and burnout mention (negative)"
+        },
+        "banned_phrases": ["calendar link", "let's connect", "schedule time"],
+        "required_elements": ["delay", "not ready", "check back"]
+      },
+      {
+        "name": "bench_match",
+        "weight": 0.25,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must check bench specialization against prospect needs"
+        },
+        "required_elements": ["Python", "backend"]
+      },
+      {
+        "name": "tone_alignment",
+        "weight": 0.25,
+        "scoring_type": "llm_judge",
+        "criteria": {
+          "description": "Tenacious tone: consultative, evidence-driven, respectful of constraints",
+          "llm_prompt": "Rate 1-5: Does this sound consultative (not pushy), evidence-driven (cites specific signals), and respectful of the prospect's situation?"
+        }
+      },
+      {
+        "name": "call_to_action",
+        "weight": 0.15,
+        "scoring_type": "regex",
+        "criteria": {
+          "description": "If signal conflict not resolved, should NOT include calendar link",
+          "regex_pattern": "https?://(?:calendly|meet|schedule)[^\\s]+"
+        }
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 75
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": ["burnout", "exhausted", "not ready"],
+    "banned_phrases": ["calendar", "schedule", "let's connect"],
+    "max_tokens": 200,
+    "requires_calendar_link": false,
+    "requires_bench_reference": true
+  },
+  "difficulty": "medium",
+  "source_mode": "programmatic",
+  "failure_dimension": "signal-conflict",
+  "example_output": "Thanks for sharing the update about Acorp's hiring plans. I noticed the all-hands mentioned team exhaustion - that's a real constraint. Let's check back in 4-6 weeks when the team has had recovery time. We have Python backend capacity then if timing aligns."
+}

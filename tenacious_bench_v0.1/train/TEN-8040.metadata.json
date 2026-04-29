@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-8040",
+  "source_mode": "trace-derived",
+  "failure_dimension": "bench-state",
+  "difficulty": "medium",
+  "generation_timestamp": "2026-04-29T20:29:54.499386",
+  "model_used": null,
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "quality_score": null
+}

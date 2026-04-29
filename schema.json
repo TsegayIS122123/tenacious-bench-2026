@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Tenacious-Bench v0.1 Task Schema - Machine-verifiable rubric for B2B sales agent evaluation",
+  "version": "0.1.0",
+  "definitions": {
+    "signal_conflict_rule": {
+      "type": "object",
+      "properties": {
+        "positive_signals": {"type": "array", "items": {"type": "string"}},
+        "negative_signals": {"type": "array", "items": {"type": "string"}},
+        "conflict_action": {"type": "string", "enum": ["delay", "qualify_negative", "book_with_warning"]},
+        "weight_multiplier": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  },
+  "type": "object",
+  "required": ["task_id", "input", "rubric", "ground_truth", "difficulty", "source_mode"],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^TEN-\\d{4}$",
+      "description": "Unique identifier format TEN-0001"
+    },
+    "input": {
+      "type": "object",
+      "required": ["prospect_brief", "bench_summary"],
+      "properties": {
+        "prospect_brief": {
+          "type": "object",
+          "properties": {
+            "company_name": {"type": "string"},
+            "hiring_signals": {"type": "array", "items": {"type": "object"}},
+            "counter_signals": {"type": "array", "items": {"type": "object"}},
+            "timestamp": {"type": "string", "format": "date"},
+            "signal_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+            "location": {"type": "string"},
+            "timezone": {"type": "string"}
+          }
+        },
+        "bench_summary": {
+          "type": "object",
+          "properties": {
+            "available_capacity": {"type": "number", "minimum": 0, "maximum": 100},
+            "specializations": {"type": "array", "items": {"type": "string"}},
+            "geographic_coverage": {"type": "array", "items": {"type": "string"}},
+            "current_utilization": {"type": "number", "minimum": 0, "maximum": 100}
+          }
+        },
+        "prior_thread": {"type": "string", "description": "Previous email exchange, if any"}
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "required": ["dimensions", "scoring_rule", "passing_threshold"],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": ["name", "weight", "scoring_type", "criteria"],
+            "properties": {
+              "name": {"type": "string"},
+              "weight": {"type": "number", "minimum": 0, "maximum": 1},
+              "scoring_type": {"type": "string", "enum": ["binary", "categorical", "llm_judge", "regex"]},
+              "criteria": {"type": "object"},
+              "banned_phrases": {"type": "array", "items": {"type": "string"}},
+              "required_elements": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        },
+        "scoring_rule": {"type": "string", "enum": ["weighted_sum", "product", "min"]},
+        "passing_threshold": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "properties": {
+        "should_book_call": {"type": "boolean"},
+        "expected_signals": {"type": "array", "items": {"type": "string"}},
+        "banned_phrases": {"type": "array", "items": {"type": "string"}},
+        "max_tokens": {"type": "integer", "minimum": 50, "maximum": 500},
+        "requires_calendar_link": {"type": "boolean"},
+        "requires_bench_reference": {"type": "boolean"}
+      }
+    },
+    "difficulty": {"type": "string", "enum": ["easy", "medium", "hard"]},
+    "source_mode": {"type": "string", "enum": ["trace-derived", "programmatic", "multi-llm-synthesis", "hand-adversarial"]},
+    "failure_dimension": {"type": "string", "enum": ["signal-conflict", "bench-state", "temporal-decay", "tone-drift", "grounding-loss"]},
+    "example_output": {"type": "string", "description": "Reference good output for calibration"}
+  }
+}

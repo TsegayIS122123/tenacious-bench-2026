@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-8001",
+  "source_mode": "trace-derived",
+  "failure_dimension": "tone-drift",
+  "difficulty": "medium",
+  "generation_timestamp": "2026-04-29T20:29:54.498940",
+  "model_used": null,
+  "judge_model": "deepseek/deepseek-chat-v3-0324",
+  "quality_score": null
+}

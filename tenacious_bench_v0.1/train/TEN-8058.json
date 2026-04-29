@@ -1,0 +1,41 @@
+{
+  "task_id": "TEN-8058",
+  "input": {
+    "prospect_brief": {
+      "company_name": "Synth-25"
+    },
+    "bench_summary": {},
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "recency_check",
+        "weight": 0.4,
+        "scoring_type": "binary"
+      },
+      {
+        "name": "signal_weighting",
+        "weight": 0.4,
+        "scoring_type": "llm_judge"
+      },
+      {
+        "name": "follow_up",
+        "weight": 0.2,
+        "scoring_type": "categorical"
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "ground_truth": {
+    "should_book_call": true,
+    "expected_signals": [],
+    "banned_phrases": [],
+    "max_tokens": 250
+  },
+  "difficulty": "medium",
+  "source_mode": "trace-derived",
+  "failure_dimension": "temporal-decay",
+  "example_output": "Synthetic trace output"
+}

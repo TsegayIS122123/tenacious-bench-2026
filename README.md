@@ -374,10 +374,6 @@ This is a personal academic deliverable for TRP1. Not accepting external contrib
 **GitHub:** [@TsegayIS122123](https://github.com/TsegayIS122123)  
 **Project:** [tenacious-bench-2026](https://github.com/TsegayIS122123/tenacious-bench-2026)
 
----
 
-**Phase Status:** 🟢 Setup Complete | 🔄 Dataset Authoring | ⏳ Training | ⏳ Publication
 
-*Last Updated: 2026-04-29*
-```
 

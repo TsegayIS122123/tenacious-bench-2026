@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-10000",
+  "source_mode": "multi-llm-synthesis",
+  "failure_dimension": "tone-drift",
+  "difficulty": "hard",
+  "generation_timestamp": "2026-04-29T20:29:54.502830",
+  "model_used": "gpt-4-turbo-2024-04-09",
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "quality_score": null
+}

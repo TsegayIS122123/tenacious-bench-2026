@@ -1,0 +1,69 @@
+{
+  "task_id": "TEN-9010",
+  "input": {
+    "prospect_brief": {
+      "company_name": "AcmeCorp",
+      "hiring_signals": [],
+      "counter_signals": [
+        {
+          "type": "burnout_mention",
+          "source": "all-hands"
+        }
+      ],
+      "timestamp": "2026-04-29",
+      "signal_confidence": 0.1,
+      "location": "San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    "bench_summary": {
+      "available_capacity": 80,
+      "specializations": [
+        "Python",
+        "AWS"
+      ],
+      "geographic_coverage": [
+        "US-West",
+        "US-East"
+      ],
+      "current_utilization": 20
+    },
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "conflict_detection",
+        "weight": 0.4,
+        "scoring_type": "binary"
+      },
+      {
+        "name": "correct_action",
+        "weight": 0.3,
+        "scoring_type": "categorical"
+      },
+      {
+        "name": "tone",
+        "weight": 0.3,
+        "scoring_type": "llm_judge"
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": [
+      "hiring",
+      "capacity"
+    ],
+    "banned_phrases": [
+      "urgent",
+      "ASAP"
+    ],
+    "max_tokens": 200
+  },
+  "difficulty": "hard",
+  "source_mode": "programmatic",
+  "failure_dimension": "signal-conflict",
+  "example_output": "I see some mixed signals in your hiring situation. Before scheduling, could we clarify headcount status?"
+}

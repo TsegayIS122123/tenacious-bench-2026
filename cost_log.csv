@@ -1,0 +1,4 @@
+timestamp,model,tokens_in,tokens_out,cost_usd,bucket,purpose
+2026-04-29 19:00:00,generation_script,0,0,0.00,dataset,dataset_generation_503_tasks
+2026-04-29 19:30:00,local_evaluation,0,0,0.00,dev,scoring_evaluator_testing
+2026-04-29 20:00:00,contamination_check,0,0,0.00,validation,partition_overlap_check

@@ -1,0 +1,84 @@
+{
+  "task_id": "TEN-0100",
+  "input": {
+    "prospect_brief": {
+      "company_name": "TechFlow",
+      "hiring_signals": [
+        {"type": "engineering_manager_hired", "name": "Sarah Chen", "date": "2026-03-15", "source": "LinkedIn"},
+        {"type": "stack_modernization", "description": "moving from monolith to microservices", "date": "2026-02-01"}
+      ],
+      "counter_signals": [
+        {"type": "freeze_rumor", "source": "Blind", "date": "2026-04-10", "confidence": 0.6},
+        {"type": "glassdoor_rating", "score": 2.5, "date": "2026-04-01"}
+      ],
+      "timestamp": "2026-04-28",
+      "signal_confidence": 0.5,
+      "location": "Austin",
+      "timezone": "America/Chicago"
+    },
+    "bench_summary": {
+      "available_capacity": 25,
+      "specializations": ["Microservices", "Kubernetes", "Go", "Java"],
+      "geographic_coverage": ["US-Central", "US-East"],
+      "current_utilization": 75
+    },
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "rumor_handling",
+        "weight": 0.30,
+        "scoring_type": "categorical",
+        "criteria": {
+          "levels": {
+            "0": "Ignores freeze rumor completely",
+            "2": "Mentions but dismisses",
+            "4": "Acknowledges as unconfirmed, suggests verification",
+            "5": "Directly asks about headcount status with sensitivity"
+          }
+        }
+      },
+      {
+        "name": "bench_relevance",
+        "weight": 0.25,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must reference microservices/container experience"
+        },
+        "required_elements": ["microservices", "Kubernetes", "containers"]
+      },
+      {
+        "name": "signal_weighting",
+        "weight": 0.30,
+        "scoring_type": "llm_judge",
+        "criteria": {
+          "description": "Correctly weights manager hire (high) vs Glassdoor (medium) vs rumor (low)"
+        }
+      },
+      {
+        "name": "format_compliance",
+        "weight": 0.15,
+        "scoring_type": "regex",
+        "criteria": {
+          "regex_pattern": "^[A-Z][^\\n]{20,150}\\n\\n[A-Z]",
+          "description": "Two paragraphs, first sentence capitalized"
+        }
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "ground_truth": {
+    "should_book_call": true,
+    "expected_signals": ["Sarah Chen", "microservices"],
+    "banned_phrases": ["we can handle anything", "no problem"],
+    "max_tokens": 250,
+    "requires_calendar_link": true,
+    "requires_bench_reference": true
+  },
+  "difficulty": "hard",
+  "source_mode": "trace-derived",
+  "failure_dimension": "signal-conflict",
+  "example_output": "Sarah Chen's move to TechFlow caught my attention - microservices migration is exactly where we've helped others. Noticed some chatter about headcount freezes (unconfirmed, of course). Is your hiring plan still on track for Q2? Our Kubernetes team (Austin-based) has capacity if timing works."
+}

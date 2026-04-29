@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-9035",
+  "source_mode": "programmatic",
+  "failure_dimension": "signal-conflict",
+  "difficulty": "hard",
+  "generation_timestamp": "2026-04-29T20:29:54.501463",
+  "model_used": "qwen/qwen-2.5-72b-instruct",
+  "judge_model": "gpt-4-turbo-2024-04-09",
+  "quality_score": null
+}

@@ -1,0 +1,23 @@
+{
+  "total_tasks": 250,
+  "partition_counts": {
+    "train": 125,
+    "dev": 75,
+    "held_out": 50
+  },
+  "source_mode_counts": {
+    "multi-llm-synthesis": 62,
+    "hand-adversarial": 38,
+    "programmatic": 75,
+    "trace-derived": 75
+  },
+  "failure_dimension_counts": {
+    "signal-conflict": 50,
+    "grounding-loss": 43,
+    "tone-drift": 46,
+    "temporal-decay": 53,
+    "bench-state": 58
+  },
+  "seed": 421,
+  "timestamp": "2026-04-29T20:29:57.078609"
+}

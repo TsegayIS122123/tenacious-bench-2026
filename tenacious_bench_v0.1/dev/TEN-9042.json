@@ -1,0 +1,61 @@
+{
+  "task_id": "TEN-9042",
+  "input": {
+    "prospect_brief": {
+      "company_name": "DataScale",
+      "hiring_signals": [],
+      "counter_signals": [],
+      "timestamp": "2026-04-29",
+      "signal_confidence": 0.5,
+      "location": "San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    "bench_summary": {
+      "available_capacity": 40,
+      "specializations": [
+        "Python",
+        "AWS"
+      ],
+      "geographic_coverage": [
+        "US-West",
+        "US-East"
+      ],
+      "current_utilization": 60
+    },
+    "prior_thread": ""
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "conflict_detection",
+        "weight": 0.4,
+        "scoring_type": "binary"
+      },
+      {
+        "name": "correct_action",
+        "weight": 0.3,
+        "scoring_type": "categorical"
+      },
+      {
+        "name": "tone",
+        "weight": 0.3,
+        "scoring_type": "llm_judge"
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "ground_truth": {
+    "should_book_call": true,
+    "expected_signals": [
+      "hiring",
+      "capacity"
+    ],
+    "banned_phrases": [],
+    "max_tokens": 200
+  },
+  "difficulty": "medium",
+  "source_mode": "programmatic",
+  "failure_dimension": "tone-drift",
+  "example_output": "Thanks for sharing. We have capacity in our Python team and would love to discuss how we can help."
+}

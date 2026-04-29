@@ -1,0 +1,10 @@
+{
+  "task_id": "TEN-8016",
+  "source_mode": "trace-derived",
+  "failure_dimension": "grounding-loss",
+  "difficulty": "medium",
+  "generation_timestamp": "2026-04-29T20:29:54.499124",
+  "model_used": null,
+  "judge_model": "qwen/qwen-2.5-72b-instruct",
+  "quality_score": null
+}
