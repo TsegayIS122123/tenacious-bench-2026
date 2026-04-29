@@ -353,10 +353,16 @@ pytest>=7.4.0      # Unit tests
 # Documentation
 mkdocs>=1.5.0      # For model card
 ```
+## 🧪 Example Tasks (3 Committed for Evaluator Validation)
 
-## 🤝 Contributing
+The scoring evaluator is validated on three concrete example tasks:
 
-This is a personal academic deliverable for TRP1. Not accepting external contributions.
+| Task ID | Source Mode | Difficulty | File Location |
+|---------|-------------|------------|---------------|
+| TEN-PROG-001 | Programmatic | Medium | `tenacious_bench_v0.1/train/TEN-PROG-001.json` |
+| TEN-TRACE-001 | Trace-derived | Hard | `tenacious_bench_v0.1/train/TEN-TRACE-001.json` |
+| TEN-ADV-001 | Hand-adversarial | Hard | `tenacious_bench_v0.1/train/TEN-ADV-001.json` |
+
 
 ## 📄 License
 

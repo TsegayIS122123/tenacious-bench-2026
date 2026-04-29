@@ -1,0 +1,101 @@
+{
+  "task_id": "TEN-PROG-001",
+  "description": "EXAMPLE TASK 1 OF 3 - Programmatic: Signal conflict with burnout",
+  "source_mode": "programmatic",
+  "difficulty": "medium",
+  "failure_dimension": "signal-conflict",
+  "input": {
+    "prospect_brief": {
+      "company_name": "TestCompanyA",
+      "hiring_signals": [
+        {"type": "job_posting", "role": "Backend Engineer", "count": 3, "date": "2026-04-15"}
+      ],
+      "counter_signals": [
+        {"type": "burnout_mention", "source": "all-hands", "quote": "team is exhausted", "date": "2026-04-20"}
+      ],
+      "timestamp": "2026-04-25",
+      "signal_confidence": 0.7,
+      "location": "Remote",
+      "timezone": "America/Los_Angeles"
+    },
+    "bench_summary": {
+      "available_capacity": 40,
+      "specializations": ["Python", "Backend"],
+      "geographic_coverage": ["US-West"],
+      "current_utilization": 60
+    },
+    "prior_thread": ""
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": ["burnout", "exhausted", "not ready"],
+    "banned_phrases": ["calendar", "schedule", "let's connect"],
+    "max_tokens": 200,
+    "requires_calendar_link": false,
+    "requires_bench_reference": true
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "signal_conflict_detection",
+        "weight": 0.35,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must detect contradiction between hiring signals (positive) and burnout mention (negative)"
+        },
+        "banned_phrases": ["calendar link", "let's connect", "schedule time"],
+        "threshold": 1
+      },
+      {
+        "name": "bench_match",
+        "weight": 0.25,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Must check bench specialization against prospect needs"
+        },
+        "required_elements": ["Python", "backend"],
+        "threshold": 1
+      },
+      {
+        "name": "tone_alignment",
+        "weight": 0.25,
+        "scoring_type": "llm_judge",
+        "criteria": {
+          "description": "Tenacious tone: consultative, evidence-driven, respectful of constraints"
+        },
+        "threshold": 3
+      },
+      {
+        "name": "call_to_action",
+        "weight": 0.15,
+        "scoring_type": "regex",
+        "criteria": {
+          "description": "If signal conflict not resolved, should NOT include calendar link",
+          "regex_pattern": "https?://(?:calendly|meet|schedule)[^\\s]+"
+        },
+        "threshold": 1
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "example_good_output": "Thanks for sharing about TestCompanyA. I notice the all-hands mentioned team exhaustion. Let's check back in 4-6 weeks when the team has had recovery time. Our Python backend team will have capacity then.",
+  "example_bad_output": "Great! Let's book a call. Here's my calendar: https://calendly.com/me",
+  "calibration": {
+    "signal_conflict_detection": {
+      "score_1": "Ignores burnout, books call with calendar link",
+      "score_3": "Mentions burnout but books call anyway",
+      "score_5": "Identifies conflict, recommends delay, no calendar link"
+    },
+    "bench_match": {
+      "score_1": "No mention of Python/backend",
+      "score_3": "Vague mention of 'relevant experience'",
+      "score_5": "Explicitly names Python/backend specialization"
+    },
+    "tone_alignment": {
+      "score_1": "Pushy: 'ASAP', 'act now', 'trust me'",
+      "score_3": "Generic professional: 'Thank you. We can help.'",
+      "score_5": "Consultative: 'Based on your situation, consider...'"
+    }
+  }
+}

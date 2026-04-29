@@ -1,0 +1,102 @@
+{
+  "task_id": "TEN-TRACE-001",
+  "description": "EXAMPLE TASK 2 OF 3 - Trace-derived: From Week 10 trace TL-089 (burnout no-show)",
+  "source_mode": "trace-derived",
+  "difficulty": "hard",
+  "failure_dimension": "signal-conflict",
+  "input": {
+    "prospect_brief": {
+      "company_name": "RealTraceCompany",
+      "hiring_signals": [
+        {"type": "engineering_manager_hired", "name": "Sarah Chen", "date": "2026-03-15"},
+        {"type": "stack_modernization", "description": "moving to microservices", "date": "2026-02-01"}
+      ],
+      "counter_signals": [
+        {"type": "freeze_rumor", "source": "Blind", "date": "2026-04-10", "confidence": 0.6},
+        {"type": "glassdoor_rating", "score": 2.5, "date": "2026-04-01"}
+      ],
+      "timestamp": "2026-04-28",
+      "signal_confidence": 0.5,
+      "location": "Austin",
+      "timezone": "America/Chicago"
+    },
+    "bench_summary": {
+      "available_capacity": 25,
+      "specializations": ["Microservices", "Kubernetes", "Go"],
+      "geographic_coverage": ["US-Central"],
+      "current_utilization": 75
+    },
+    "prior_thread": "Previous outreach on 2026-03-15 received no response"
+  },
+  "ground_truth": {
+    "should_book_call": false,
+    "expected_signals": ["freeze", "rumor", "verify"],
+    "banned_phrases": ["we can help with anything"],
+    "max_tokens": 250,
+    "requires_calendar_link": false,
+    "requires_bench_reference": true
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "name": "ghosting_handling",
+        "weight": 0.35,
+        "scoring_type": "categorical",
+        "criteria": {
+          "levels": {
+            "0": "No mention of prior outreach",
+            "2": "Generic 'following up' without acknowledgment",
+            "4": "Acknowledges no response, offers value add",
+            "5": "References specific earlier message, provides new signal, low-pressure"
+          }
+        },
+        "threshold": 3
+      },
+      {
+        "name": "counter_signal_synthesis",
+        "weight": 0.35,
+        "scoring_type": "llm_judge",
+        "criteria": {
+          "description": "Synthesizes freeze rumor + low Glassdoor into retention risk diagnosis"
+        },
+        "threshold": 3
+      },
+      {
+        "name": "capacity_honesty",
+        "weight": 0.20,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "Discloses current 75% utilization"
+        },
+        "required_elements": ["75", "utilization", "capacity"],
+        "threshold": 1
+      },
+      {
+        "name": "no_false_urgency",
+        "weight": 0.10,
+        "scoring_type": "binary",
+        "criteria": {
+          "description": "No urgency markers"
+        },
+        "banned_phrases": ["urgent", "ASAP", "act now", "limited time"],
+        "threshold": 1
+      }
+    ],
+    "scoring_rule": "weighted_sum",
+    "passing_threshold": 70
+  },
+  "example_good_output": "Following up on my March 15 note - since then, I've seen Sarah Chen's hire and the microservices push. Also noticing some hiring freeze chatter on Blind (unconfirmed). Are your hiring plans still on track? Our microservices team has limited bandwidth at 75% utilization, but I can share benchmarks regardless.",
+  "example_bad_output": "We can help with microservices! Let's jump on a call. https://calendly.com/me",
+  "calibration": {
+    "ghosting_handling": {
+      "score_1": "No mention of prior outreach",
+      "score_3": "'Following up' without acknowledging no response",
+      "score_5": "References specific prior message, offers value"
+    },
+    "counter_signal_synthesis": {
+      "score_1": "Ignores all counter-signals",
+      "score_3": "Mentions freeze rumor but dismisses it",
+      "score_5": "Synthesizes rumor + Glassdoor into retention risk"
+    }
+  }
+}

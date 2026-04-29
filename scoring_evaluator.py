@@ -1,14 +1,87 @@
 #!/usr/bin/env python3
+
+#!/usr/bin/env python3
 """
 Tenacious-Bench Scoring Evaluator
 Machine-verifiable rubric scoring for B2B sales agent outputs.
 
-Usage:
-    python scoring_evaluator.py --task tenacious_bench_v0.1/train/TEN-0001.json --agent-output "agent response here"
-    python scoring_evaluator.py --split held_out --agent-config week10_agent
+================================================================================
+RUBRIC CALIBRATION: What Score 1, 3, 5 Means for Each Dimension
+================================================================================
 
-Author: Tsegay IS122123
-Date: 2026-04-29
+DIMENSION 1: signal_conflict_detection / conflict_detection (weight: 0.35)
+--------------------------------------------------------------------------------
+Score 1 (Poor):     Ignores all counter-signals, books call anyway, no mention of contradictions
+                    Example: "Great! Let's book a call. https://calendly.com/me"
+                    
+Score 3 (Acceptable): Mentions counter-signals but doesn't change action, still books call
+                    Example: "I see the burnout mention. Still, let's talk."
+                    
+Score 5 (Excellent): Identifies conflict, recommends delay or qualification
+                    Example: "Let's check back in 6 weeks when the team has recovered."
+
+DIMENSION 2: bench_match / bench-state (weight: 0.25)
+--------------------------------------------------------------------------------
+Score 1 (Poor):     Claims expertise in irrelevant tech, ignores specialization mismatch
+                    Example: "We can handle React Native" (but bench has only React)
+                    
+Score 3 (Acceptable): Acknowledges mismatch but offers no alternative
+                    Example: "We don't do React Native, sorry."
+                    
+Score 5 (Excellent): Honest about constraints, redirects appropriately
+                    Example: "We specialize in Python/backend. For React Native, I'd recommend X."
+
+DIMENSION 3: tone_alignment (weight: 0.25)
+--------------------------------------------------------------------------------
+Score 1 (Poor):     Pushy, contains urgency markers like "ASAP", "act now", "trust me"
+                    Example: "You need to act now before our capacity fills up!"
+                    
+Score 3 (Acceptable): Professional but generic, no specific signal grounding
+                    Example: "Thank you for your message. We can help."
+                    
+Score 5 (Excellent): Consultative, evidence-driven, respectful of constraints
+                    Example: "Based on your engineering manager hire, we have PyTorch capacity."
+
+DIMENSION 4: call_to_action (weight: 0.15)
+--------------------------------------------------------------------------------
+Score 1 (Poor):     Calendar link present when ground truth says should_book_call = false
+                    Example (should NOT book): "https://calendly.com/me"
+                    
+Score 3 (Acceptable): Generic CTA without calendar link when should book
+                    Example (should book): "Let me know if you'd like to connect."
+                    
+Score 5 (Excellent): Correct call decision (book/don't book) with appropriate CTA
+                    Example (should NOT book): No calendar link, check-back language
+                    Example (should book): Calendar link present
+
+DIMENSION 5: banned_phrase_free (weight: 0.10)
+--------------------------------------------------------------------------------
+Score 1 (Poor):     Contains 3+ banned phrases from the list
+Score 3 (Acceptable): Contains 1-2 banned phrases
+Score 5 (Excellent): Zero banned phrases
+
+Banned phrases list: ["we can handle anything", "no problem at all", "don't worry", 
+                     "trust me", "believe me", "honestly", "to be honest"]
+
+================================================================================
+SCORING RULE: Weighted sum, then convert to 0-100
+================================================================================
+Total = (conflict_score * 0.35 + bench_score * 0.25 + tone_score * 0.25 + 
+         cta_score * 0.15 + banned_score * 0.10) * 100
+
+Passing threshold: 70/100
+
+================================================================================
+EXAMPLE TASKS (3 committed in tenacious_bench_v0.1/train/)
+================================================================================
+1. TEN-PROG-001.json - Programmatic: signal conflict with burnout
+2. TEN-TRACE-001.json - Trace-derived: from Week 10 TL-089
+3. TEN-ADV-001.json   - Hand-adversarial: multiple counter-signals
+
+Run evaluator on examples:
+    python scoring_evaluator.py --task tenacious_bench_v0.1/train/TEN-PROG-001.json --agent-output "test"
+    python scoring_evaluator.py --task tenacious_bench_v0.1/train/TEN-TRACE-001.json --agent-output "test"
+    python scoring_evaluator.py --task tenacious_bench_v0.1/train/TEN-ADV-001.json --agent-output "test"
 """
 
 import json
