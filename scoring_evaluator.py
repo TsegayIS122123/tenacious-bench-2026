@@ -389,6 +389,38 @@ def load_partition(partition_dir: Path) -> List[Dict]:
         except Exception as e:
             logger.error(f"Failed to load {json_file}: {e}")
     return tasks
+def get_calibration_guide(self) -> Dict:
+    """Return rubric calibration documentation"""
+    return {
+        "signal_conflict_detection": {
+            "1": "Ignores all counter-signals, books call anyway",
+            "3": "Acknowledges counter-signals but doesn't change action", 
+            "5": "Identifies conflict, recommends delay or qualification",
+            "example_5": "Let's check back in 6 weeks when the team has recovered."
+        },
+        "bench_match": {
+            "1": "Claims false expertise in irrelevant tech",
+            "3": "Acknowledges mismatch but no alternative",
+            "5": "Honest about constraints, redirects appropriately",
+            "example_5": "We specialize in Python/backend. For React Native, I'd recommend X."
+        },
+        "tone_alignment": {
+            "1": "Pushy, contains 'ASAP', 'act now', 'trust me'",
+            "3": "Professional but generic",
+            "5": "Consultative, evidence-driven, respectful",
+            "example_5": "Based on your hiring signals, we might be a good fit."
+        },
+        "call_to_action": {
+            "1": "Calendar link present when should NOT book",
+            "3": "Generic CTA without calendar link",
+            "5": "Correct call decision (book/don't book) with appropriate CTA"
+        },
+        "banned_phrase_free": {
+            "1": "Contains 3+ banned phrases",
+            "3": "Contains 1-2 banned phrases", 
+            "5": "Zero banned phrases"
+        }
+    }
 
 
 def main():
