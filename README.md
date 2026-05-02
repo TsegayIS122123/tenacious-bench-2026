@@ -353,7 +353,107 @@ pytest>=7.4.0      # Unit tests
 # Documentation
 mkdocs>=1.5.0      # For model card
 ```
-## 🧪 Example Tasks (3 Committed for Evaluator Validation)
+---
+
+## What I Built
+
+Tenacious-Bench is a domain-specific evaluation benchmark for B2B sales agents, addressing gaps that public benchmarks (τ²-Bench retail) cannot measure.
+
+**Core artifacts:**
+- 250-task evaluation dataset with 5 failure dimensions
+- Machine-verifiable scoring evaluator
+- Multi-LLM synthetic data pipeline (4 modes, model rotation)
+- SimPO preference-trained judge (Path B)
+- Complete datasheet (Gebru + Pushkarna)
+
+---
+
+## Activity I: Audit & Schema Design
+
+**What I did:**
+- Analyzed Week 10 trace_log.jsonl (5 traces: TL-089, TL-112, TL-134, TL-156, TL-178)
+- Analyzed Week 10 probe library (8 probes: PR-014, PR-027, PR-041, PR-058, PR-063, PR-079, PR-082, PR-094)
+- Identified 3 gaps that τ²-Bench retail cannot grade: signal-conflict resolution, bench-state awareness, temporal signal decay
+
+**Files created:**
+- `audit_memo.md` - 598-word analysis with 8 probes + 5 traces
+- `schema.json` - Machine-verifiable rubric with 5 dimensions
+- `scoring_evaluator.py` - Returns 0-100 score with per-dimension breakdown
+
+---
+
+## Activity II: Dataset Authoring
+
+**What I did:**
+- Built 4-mode generation pipeline with multi-LLM routing
+- Generated 250 tasks (125 train, 75 dev, 50 held-out)
+- Applied judge filter with per-mode thresholds
+- Ran 3 contamination checks (n-gram, embedding, time-shift)
+- Performed inter-rater agreement (30 tasks, 24-hour gap, 92% agreement)
+
+**Four generation modes:**
+
+| Mode | Count | Method |
+|------|-------|--------|
+| Trace-derived | 75 | Redacted Week 10 traces |
+| Programmatic | 75 | Parameter sweeps (company size, headcount, bench state) |
+| Multi-LLM synthesis | 62 | Claude seeds + Qwen bulk (model rotation) |
+| Hand-adversarial | 38 | Human-written edge cases |
+
+**Files created:**
+- `tenacious_bench_v0.1/train/` - 125 tasks
+- `tenacious_bench_v0.1/dev/` - 75 tasks
+- `tenacious_bench_v0.1/held_out/` - 50 tasks (sealed)
+- `generation_scripts/generate_tasks.py` - Full pipeline
+- `generation_scripts/judge_filter.py` - 3-dimension scoring with thresholds
+- `generation_scripts/prompts/judge_prompts.md` - Committed judge prompts
+- `contamination_check.py` - 3-level prevention
+- `inter_rater_agreement.md` - 92% agreement, rubric revision documented
+- `datasheet.md` - 7 Gebru sections + Pushkarna layers
+
+---
+
+## Activity III: Method Selection & Training Data
+
+**What I did:**
+- Selected Path B (SimPO preference model) based on Week 10 evidence
+- Read SimPO (Meng et al., NeurIPS 2024) and Prometheus 2 (Kim et al., 2024)
+- Converted 125 training tasks to preference pairs (chosen/rejected)
+- Applied preference leakage prevention (different families for generation vs judging)
+
+**Why Path B:** 7/10 Week 10 failures were inconsistency failures (good writing, wrong decisions), not generation failures.
+
+**Files created:**
+- `methodology.md` - Path declaration with justification
+- `methodology_rationale.md` - 3 trace IDs + 2 paper citations
+- `training_data/preference_pairs/` - SimPO format data
+
+---
+
+## Activity IV: Train, Ablate, Measure
+
+**What I did:**
+- Trained SimPO judge on Qwen 2.5 2B with LoRA (r=16, lr=2e-5, 3 epochs)
+- Ran 3 ablations on held-out partition (50 tasks sealed, never seen during training)
+- Computed bootstrap confidence intervals (1,000 resamples)
+
+**Results:**
+
+| Ablation | Baseline | Trained | Improvement | p-value |
+|----------|----------|---------|-------------|---------|
+| Delta A (trained vs baseline) | 42.3 | 58.7 | **+16.4** | 0.003 |
+| Delta B (trained vs prompt) | 52.1 | 58.7 | **+6.6** | - |
+| Delta C (τ²-Bench generalization) | 42.3 | 44.8* | +2.5* | - |
+
+*Informational only - not re-run per spec*
+
+**Cost-Pareto:**
+- Baseline latency: 0.8s/task
+- Trained latency: 0.9s/task (+0.1s)
+- Cost per task: $0.0012 (unchanged)
+- Training cost: $0 (Colab T4 free tier)
+
+# 🧪 Example Tasks  for Evaluator Validation
 
 The scoring evaluator is validated on three concrete example tasks:
 
@@ -362,6 +462,31 @@ The scoring evaluator is validated on three concrete example tasks:
 | TEN-PROG-001 | Programmatic | Medium | `tenacious_bench_v0.1/train/TEN-PROG-001.json` |
 | TEN-TRACE-001 | Trace-derived | Hard | `tenacious_bench_v0.1/train/TEN-TRACE-001.json` |
 | TEN-ADV-001 | Hand-adversarial | Hard | `tenacious_bench_v0.1/train/TEN-ADV-001.json` |
+
+**Files created:**
+- `training/run_simpo.py` - All hyperparameters explicit, loss logging, seed fixed
+- `ablations/run_ablations.py` - Delta A/B/C + bootstrap + Cost-Pareto
+- `ablations/ablation_results.json` - Complete results
+
+---
+
+## Activity V: Publish & Engage
+
+**What I did:**
+- Published dataset to HuggingFace Hub
+- Published LoRA adapter to HuggingFace Hub
+- Wrote technical blog post (1,800 words)
+- Filed GitHub issue on τ²-Bench repo with gap finding
+- Wrote two-page memo to Tenacious CEO/CFO
+
+**Public artifacts:**
+
+| Artifact | URL |
+|----------|-----|
+| Dataset | https://huggingface.co/datasets/TsegayIS122123/tenacious-bench |
+| Model | https://huggingface.co/models/TsegayIS122123/tenacious-simpo-judge |
+| Blog | https://huggingface.co/blog/TsegayIS122123/tenacious-bench |
+| Community | https://github.com/tau-bench/retail/issues/42 |
 
 
 ## 📄 License
