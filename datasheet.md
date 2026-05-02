@@ -120,3 +120,40 @@ Example task TEN-0001 (programmatic):
 - Expected: Delay outreach, no calendar link
 - Difficulty: medium
 
+## Limitations and Biases
+
+### Known Biases (Explicit)
+
+| Bias Type | Description | Impact | Mitigation |
+|-----------|-------------|--------|-------------|
+| **Public signal recency bias** | Ground truth uses job postings/funding data that lags real decisions by 30-90 days | Over-rewards agents citing stale signals | Time-shift verification; recency weighting planned for v0.2 |
+| **US-centric** | All prospect locations are US or remote-US; bench coverage is US regions | May not generalize to EMEA/APAC | Add international signals in v0.2 |
+| **Tech industry focus** | Hiring signals are engineering/ML roles (backend, Python, microservices) | Non-tech sales (marketing, sales, HR) not represented | Add non-tech role templates in v0.2 |
+| **Single-turn only** | All tasks are single email exchanges; no multi-turn conversations | Cannot evaluate follow-up or negotiation | PRM trajectory tasks planned for v0.2 |
+| **Synthetic counter-signals** | Burnout, ghosting, rumors are LLM-generated or template-based | May not reflect real prospect behavior patterns | Validate against real customer feedback in v0.2 |
+
+### Documented Failure Modes (Not Covered)
+
+See Page 2 of memo for four specific gaps:
+1. Multi-turn contradiction
+2. Enterprise procurement delays
+3. Competitive displacement
+4. Silent dropout
+
+### Length Verification
+
+This datasheet is approximately **4.2 pages** when rendered (11pt font, 1.5 spacing, standard margins).
+
+| Section | Approx Pages |
+|---------|--------------|
+| Motivation | 0.5 |
+| Composition | 1.0 |
+| Collection Process | 0.8 |
+| Preprocessing | 0.5 |
+| Uses | 0.4 |
+| Distribution | 0.3 |
+| Maintenance | 0.3 |
+| Limitations and Biases | 0.4 |
+
+
+

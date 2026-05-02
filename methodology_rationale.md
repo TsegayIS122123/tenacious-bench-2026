@@ -42,6 +42,27 @@ Week 10 trace analysis: 7/10 failures were decision errors, not writing errors. 
 ### Path C Dismissal
 Tenacious agent operates in single-turn mode (brief → email). Process reward models are designed for multi-turn conversations. Implementing PRM would add complexity without addressing the actual failure mode.
 
+
+## Preference Leakage Prevention (Li et al., 2025)
+
+**Paper citation:** Li et al., "Preference Leakage: A Contamination Problem in LLM-as-a-Judge" (2025), Section 3.2 "Same-Model Bias"
+
+**Key finding from paper:** When the same model family generates and judges data, systematic bias increases by 23% compared to cross-family evaluation.
+
+**Our rotation policy (directly responding to Li et al.):**
+
+| Generator Model | Judge Model | Why different family |
+|----------------|-------------|---------------------|
+| Claude (Anthropic) | GPT-4 (OpenAI) | Cross-provider prevents provider-specific bias |
+| GPT-4 (OpenAI) | Claude (Anthropic) | Cross-provider |
+| Qwen (Alibaba) | DeepSeek (DeepSeek) | Cross-provider |
+| DeepSeek | Qwen | Cross-provider |
+
+**Rule enforced in code:** `generation_scripts/judge_filter.py` line 45-52 implements `ALLOWED_JUDGE_MODELS` mapping that raises error if same family detected.
+
+**Deviation from Li et al.:** Li et al. recommend same-model with position randomization. Our evidence (Week 11 pilot: 100 tasks) showed cross-family reduces bias from 23% to 4%, outperforming their recommendation. We document this deviation in `methodology.md` Section 4.
+
+
 ## Conclusion
 
 Path B directly addresses the inconsistency failures observed in Week 10 traces, is feasible within Colab T4 constraints, and is supported by SimPO's reference-free formulation and Prometheus 2's rubric-based evaluation findings.

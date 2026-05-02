@@ -489,6 +489,59 @@ The scoring evaluator is validated on three concrete example tasks:
 | Community | https://github.com/tau-bench/retail/issues/42 |
 
 
+## License
+
+**CC-BY-4.0** (Creative Commons Attribution 4.0 International)
+
+You are free to:
+- Share — copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material for any purpose
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the license
+
+Full license text: [LICENSE](./LICENSE)
+
+---
+
+## Attribution and Credits
+
+This project builds on the following open-source work:
+
+| Component | Source | License | Usage |
+|-----------|--------|---------|-------|
+| Qwen 2.5 2B | Alibaba Group | Apache 2.0 | Base model for training |
+| Unsloth | Unsloth AI | Apache 2.0 | LoRA training framework |
+| τ²-Bench | Stanford OVAL | MIT | Public benchmark reference (gap analysis) |
+| OpenRouter | OpenRouter.ai | Proprietary | Multi-LLM API routing (dev-tier only) |
+| HuggingFace Transformers | HuggingFace | Apache 2.0 | Model loading and inference |
+
+**Data sources:**
+- Crunchbase public ODM sample (1,001 companies) - Public signal seeds
+- Layoffs.fyi CSV - Counter-signal seeds
+- Tenacious Week 10 agent traces (`trace_log.jsonl`) - Trace-derived tasks (redacted)
+
+**Paper citations:**
+- SimPO: Meng, Xia, Chen (NeurIPS 2024)
+- Prometheus 2: Kim et al. (2024)
+- Preference Leakage: Li et al. (2025)
+
+---
+
+### Citation
+
+If you use Tenacious-Bench in your research, please cite:
+
+```bibtex
+@misc{tenacious-bench-2026,
+  author = {Tsegay IS122123},
+  title = {Tenacious-Bench: A Synthetic Evaluation Benchmark for B2B Sales Agents},
+  year = {2026},
+  publisher = {HuggingFace},
+  url = {https://huggingface.co/datasets/TsegayIS122123/tenacious-bench},
+  note = {Built on Qwen 2.5 with SimPO training}
+}
+```
 ## 📄 License
 
 **CC-BY-4.0** - You are free to share and adapt with attribution.
